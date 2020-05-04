@@ -12,6 +12,9 @@ public class GameController : MonoBehaviour
     void Start()
     {
         GameObject prefab = PhotonNetwork.Instantiate(Prefab.name, SpawnPoint.position, Quaternion.identity);
-        prefab.AddComponent<PlayerMovement>();
+       // if (prefab.CompareTag("Player"))
+      //  {
+            prefab.AddComponent<PlayerMovement>();
+       // }
     }
 }

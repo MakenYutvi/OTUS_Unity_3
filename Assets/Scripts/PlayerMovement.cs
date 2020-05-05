@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.AI;
 
 
@@ -29,6 +29,22 @@ public sealed class PlayerMovement : MonoBehaviour
         var timeDelta = Time.deltaTime;
         var horizontal = Input.GetAxis(HORIZONTAL);
         var vertical = Input.GetAxis(VERTICAL);
+
+       // if (Input.GetMouseButtonDown(0))
+       // {
+       //     _playerAnimation.OnFireEnable();
+       // }
+
+       // if (Input.GetMouseButtonUp(0))
+       // {
+       //     _playerAnimation.OnFireDisable();
+       // }
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            _playerAnimation.OnJumpEnable();
+            Debug.Log("Jump");
+        }
 
         _movement.Set(horizontal, 0.0f, vertical);
 

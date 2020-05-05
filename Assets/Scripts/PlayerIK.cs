@@ -18,7 +18,7 @@ public class PlayerIK : MonoBehaviour
         animator = GetComponent<Animator>();
     }
 
-    void OnAnimatorIK(int layerIndex)
+    void testOnAnimatorIK(int layerIndex)///убрать тест
     {
         if (animator == null)
             return;

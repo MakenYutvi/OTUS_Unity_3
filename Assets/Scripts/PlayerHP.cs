@@ -44,7 +44,11 @@ namespace DefaultNamespace
             _health -= damage;
             
             HealthBar.text = _health <= 0.0f ? "0" : $"{_health}";
-            _hitEffectAnimation.PlayEffect();
+            if(damage != 0.0f)
+            {
+                _hitEffectAnimation.PlayEffect();
+            }
+           
             if (_health <= 0.0f && photonView.IsMine)
                 
             {

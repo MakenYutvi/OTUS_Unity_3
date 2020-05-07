@@ -4,6 +4,7 @@ using UnityEngine;
 public sealed class Gun : MonoBehaviour
 {
     public float Damage = 2.0f;
+    private ParticleSystem _particle;
     private PlayerAnimation _playerAnimation;
     private Camera _mainCamera;
     private Vector2 _center;
@@ -11,12 +12,17 @@ public sealed class Gun : MonoBehaviour
     private int _layerMask;
     private bool _isReady = true;
     private float _rechergeTime = 0.2f;
+    GunAmmo ammo;
+    bool isBot;
 
     public void Start()
     {
+        ammo = GetComponentInParent<GunAmmo>();
+        isBot = GetComponent<BotUtility>() != null;
+        _particle = GetComponentInChildren<ParticleSystem>();
         _mainCamera = Camera.main;
         _layerMask = 0;//1 << 8;
-        _layerMask = ~ _layerMask;
+        _layerMask = ~_layerMask;
         _center.Set(Screen.width / 2.0f, Screen.height / 2.0f);
     }
 
@@ -30,36 +36,63 @@ public sealed class Gun : MonoBehaviour
         _playerAnimation = playerAnimation;
     }
 
-    private void Update()
+    public bool HasEnoughAmmo()
     {
-        if (Input.GetMouseButton(0))
+        return ammo.Count > 0;
+    }
+
+    public void BeginAnimateShoot()
+    {
+        _playerAnimation.OnFireEnable();
+    }
+
+    public void EndAnimateShoot()
+    {
+        _playerAnimation.OnFireDisable();
+    }
+
+    public bool Shoot(Ray ray)
+    {
+        --ammo.Count;
+        _particle.Play();
+        foreach (var hit in Physics.RaycastAll(ray, _dedicateDistance, _layerMask))
         {
-            if (_isReady)
+            if (hit.collider)
             {
-                if (Physics.Raycast(_mainCamera.ScreenPointToRay(_center),
-                    out RaycastHit hit, _dedicateDistance, _layerMask))
+                if (hit.collider.TryGetComponent<PhotonView>(out PhotonView view))
                 {
-                    if (hit.collider)
-                    {
-                        if (hit.collider.TryGetComponent<PhotonView>(out PhotonView view))
-                        {
-                            view.RPC("GetDamageRPC", RpcTarget.All, Damage);
-                            _isReady = false;
-                            Invoke(nameof(ReadyShoot), _rechergeTime);
-                        }
-                    }
+                    view.RPC("GetDamageRPC", RpcTarget.All, Damage);
+                    return true;
                 }
             }
         }
+        return false;
+    }
 
-        if (Input.GetMouseButtonDown(0))
+    private void Update()
+    {
+        if (isBot)
+            return;
+        if (Input.GetMouseButton(0) && HasEnoughAmmo() && !isBot)
+        {
+            
+            if (_isReady)
+            {
+                Debug.Log(ammo.Count);
+                Shoot(_mainCamera.ScreenPointToRay(_center));
+                _isReady = false;
+                Invoke(nameof(ReadyShoot), _rechergeTime);
+            }
+        }
+
+        if (Input.GetMouseButtonDown(0) && HasEnoughAmmo())
         {
             _center.Set(Screen.width / 2.0f, Screen.height / 2.0f);
-            _playerAnimation.OnFireEnable();
+            BeginAnimateShoot();
         }
         if (Input.GetMouseButtonUp(0))
         {
-            _playerAnimation.OnFireDisable();
+            EndAnimateShoot();
         }
     }
 

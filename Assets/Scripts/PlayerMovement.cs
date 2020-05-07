@@ -10,9 +10,11 @@ public sealed class PlayerMovement : MonoBehaviour
     private PlayerAnimation _playerAnimation;
     private NavMeshAgent _agent;
     private Camera _camera;
+    bool isBot;
 
     private void Awake()
     {
+        isBot = GetComponent<BotUtility>() != null;
         _camera = Camera.main;
         _agent = GetComponent<NavMeshAgent>();
         _playerAnimation = GetComponent<PlayerAnimation>();
@@ -26,25 +28,15 @@ public sealed class PlayerMovement : MonoBehaviour
         if (_agent == null)
             return;
 
+        if (isBot)
+        {
+            _playerAnimation.SetMove(_agent.velocity);
+            return;
+        }
+
         var timeDelta = Time.deltaTime;
         var horizontal = Input.GetAxis(HORIZONTAL);
         var vertical = Input.GetAxis(VERTICAL);
-
-       // if (Input.GetMouseButtonDown(0))
-       // {
-       //     _playerAnimation.OnFireEnable();
-       // }
-
-       // if (Input.GetMouseButtonUp(0))
-       // {
-       //     _playerAnimation.OnFireDisable();
-       // }
-
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            _playerAnimation.OnJumpEnable();
-            Debug.Log("Jump");
-        }
 
         _movement.Set(horizontal, 0.0f, vertical);
 
@@ -52,14 +44,18 @@ public sealed class PlayerMovement : MonoBehaviour
         {
             _movement.Normalize();
         }
-
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            _playerAnimation.OnJumpEnable();
+            Debug.Log("Jump");
+        }
         Vector3 targetDirection = _camera.transform.TransformDirection(_movement);
         targetDirection.y = 0.0f;
         transform.localEulerAngles = new Vector3(transform.localEulerAngles.x,
             _camera.transform.localEulerAngles.y, transform.localEulerAngles.z);
 
         _agent.Move(targetDirection * timeDelta);
-        _agent.SetDestination(transform.position +  targetDirection);
+        _agent.SetDestination(transform.position + targetDirection);
 
         _playerAnimation.SetMove(_movement);
     }

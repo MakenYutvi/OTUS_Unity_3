@@ -10,13 +10,20 @@ namespace DefaultNamespace
     {
         public float MaxHealth = 100.0f;
         public TextMesh HealthBar;
+        private HitEffectAnimation _hitEffectAnimation;
         public float Health => _health;
         private float _health;
 
-        private void Start()
+        private void Awake()
         {
             _health = MaxHealth;
+            _hitEffectAnimation = GetComponentInChildren<HitEffectAnimation>();
+        }
+
+        private void Start()
+        {
             GetDamageRPC(0.0f);
+            
         }
 
         public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -35,14 +42,22 @@ namespace DefaultNamespace
         private void GetDamageRPC(float damage)
         {
             _health -= damage;
+            
             HealthBar.text = _health <= 0.0f ? "0" : $"{_health}";
+            _hitEffectAnimation.PlayEffect();
             if (_health <= 0.0f && photonView.IsMine)
+                
             {
                 RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
                 SendOptions sendOptions = new SendOptions { Reliability = true };
 
                 PhotonNetwork.RaiseEvent(1, gameObject.name, raiseEventOptions, sendOptions);
             }
+        }
+
+        public void AddHealth(float add)
+        {
+            GetDamageRPC(-add);
         }
     }
 }

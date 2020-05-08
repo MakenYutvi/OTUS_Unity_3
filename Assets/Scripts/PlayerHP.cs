@@ -65,6 +65,7 @@ namespace DefaultNamespace
                 else
                 {
                     PhotonNetwork.RaiseEvent(1, PlayerPrefs.GetString("NameOfPlayer"), raiseEventOptions, sendOptions);
+                    PhotonNetwork.RaiseEvent(1, PhotonNetwork.NickName, raiseEventOptions, sendOptions);
                 }
                 // PhotonNetwork.RaiseEvent(1, gameObject.name, raiseEventOptions, sendOptions);
               //  PhotonNetwork.LoadLevel("InitialScene");

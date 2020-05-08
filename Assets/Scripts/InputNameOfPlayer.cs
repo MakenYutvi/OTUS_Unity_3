@@ -26,5 +26,6 @@ public class InputNameOfPlayer : MonoBehaviourPunCallbacks
         Debug.Log(InputField.text);
         _lobbyCanvac.gameObject.SetActive(true);
         PlayerPrefs.SetString("NameOfPlayer", InputField.text);
+        PhotonNetwork.NickName = InputField.text;
     }
 }

@@ -18,6 +18,8 @@ public class PlayerRotation : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (_agent == null)
+            return;
         _angle = _agent.transform.rotation.w;
  
         if ((_angle - _angle_prev)>0.1)

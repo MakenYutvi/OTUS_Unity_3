@@ -85,7 +85,7 @@ public sealed class Gun : MonoBehaviour
             }
         }
 
-        if (Input.GetMouseButtonDown(0) && HasEnoughAmmo())
+        if (Input.GetMouseButtonDown(0) && HasEnoughAmmo() && gameObject.activeInHierarchy)
         {
             _center.Set(Screen.width / 2.0f, Screen.height / 2.0f);
             BeginAnimateShoot();

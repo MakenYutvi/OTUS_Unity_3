@@ -14,6 +14,7 @@ namespace DefaultNamespace
         private HitEffectAnimation _hitEffectAnimation;
         public float Health => _health;
         private float _health;
+        bool isBot;
 
         private void Awake()
         {
@@ -24,7 +25,8 @@ namespace DefaultNamespace
         private void Start()
         {
             GetDamageRPC(0.0f);
-            
+            isBot = GetComponent<BotUtility>() != null;
+
         }
 
         public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -56,7 +58,14 @@ namespace DefaultNamespace
                 RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
                 SendOptions sendOptions = new SendOptions { Reliability = true };
 
-                PhotonNetwork.RaiseEvent(1, PlayerPrefs.GetString("NameOfPlayer"), raiseEventOptions, sendOptions);
+                if (isBot)
+                {
+                    PhotonNetwork.RaiseEvent(1, gameObject.name, raiseEventOptions, sendOptions);
+                }
+                else
+                {
+                    PhotonNetwork.RaiseEvent(1, PlayerPrefs.GetString("NameOfPlayer"), raiseEventOptions, sendOptions);
+                }
                 // PhotonNetwork.RaiseEvent(1, gameObject.name, raiseEventOptions, sendOptions);
               //  PhotonNetwork.LoadLevel("InitialScene");
               //  SceneManager.LoadScene("InitialScene");

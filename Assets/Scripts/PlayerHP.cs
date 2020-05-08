@@ -2,6 +2,7 @@ using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 
 namespace DefaultNamespace
@@ -55,7 +56,10 @@ namespace DefaultNamespace
                 RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
                 SendOptions sendOptions = new SendOptions { Reliability = true };
 
-                PhotonNetwork.RaiseEvent(1, gameObject.name, raiseEventOptions, sendOptions);
+                PhotonNetwork.RaiseEvent(1, PlayerPrefs.GetString("NameOfPlayer"), raiseEventOptions, sendOptions);
+                // PhotonNetwork.RaiseEvent(1, gameObject.name, raiseEventOptions, sendOptions);
+              //  PhotonNetwork.LoadLevel("InitialScene");
+              //  SceneManager.LoadScene("InitialScene");
             }
         }
 

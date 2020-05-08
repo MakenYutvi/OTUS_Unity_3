@@ -1,4 +1,4 @@
-﻿using ExitGames.Client.Photon;
+using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
@@ -13,6 +13,12 @@ public sealed class Messenger : MonoBehaviour, IOnEventCallback
         {
             string data = (string)photonEvent.CustomData;
             Text.text = $"Умер {data}";
+        }
+
+        if (photonEvent.Code == 2)
+        {
+            string data = (string)photonEvent.CustomData;
+            Text.text = $"Присоединился {data}";
         }
     }
 

@@ -4,6 +4,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using ExitGames.Client.Photon;
+
 
 public class Lobby : MonoBehaviourPunCallbacks
 {
@@ -18,7 +20,7 @@ public class Lobby : MonoBehaviourPunCallbacks
         PhotonNetwork.ConnectUsingSettings();
         PhotonNetwork.GameVersion = "1.0";
     }
-
+    
     public override void OnConnectedToMaster()
     {
         PhotonNetwork.JoinLobby();
@@ -33,6 +35,8 @@ public class Lobby : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
             PhotonNetwork.LoadLevel("GameScene");
+
+       
     }
 
     public override void OnRoomListUpdate(List<RoomInfo> roomList)

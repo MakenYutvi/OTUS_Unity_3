@@ -3,7 +3,7 @@ using UnityEngine;
 
 public sealed class Mortar : MonoBehaviour
 {
-    public float Damage = 2.0f;
+   // public float Damage = 2.0f;
  //   private ParticleSystem _particle;
     private PlayerAnimation _playerAnimation;
     private Camera _mainCamera;
@@ -13,6 +13,7 @@ public sealed class Mortar : MonoBehaviour
     private bool _isReady = true;
     private float _rechergeTime = 0.2f;
     GunAmmo ammo;
+    Mine _mine;
     bool isBot;
 
     public void Start()
@@ -24,6 +25,7 @@ public sealed class Mortar : MonoBehaviour
         _layerMask = 0;//1 << 8;
         _layerMask = ~_layerMask;
         _center.Set(Screen.width / 2.0f, Screen.height / 2.0f);
+        _mine = GetComponentInChildren<Mine>();
     }
 
     public void SetActive(bool isActive)
@@ -51,22 +53,10 @@ public sealed class Mortar : MonoBehaviour
         _playerAnimation.OnFireDisable();
     }
 
-    public bool Shoot(Ray ray)
+    public void Shoot(Ray ray)
     {
         --ammo.Count;
-      //  _particle.Play();
-        foreach (var hit in Physics.RaycastAll(ray, _dedicateDistance, _layerMask))
-        {
-            if (hit.collider)
-            {
-                if (hit.collider.TryGetComponent<PhotonView>(out PhotonView view))
-                {
-                    view.RPC("GetDamageRPC", RpcTarget.All, Damage);
-                    return true;
-                }
-            }
-        }
-        return false;
+        _mine.LaunchMine(ray.GetPoint(20));
     }
 
     private void Update()
@@ -96,8 +86,12 @@ public sealed class Mortar : MonoBehaviour
         }
     }
 
-    private void ReadyShoot()
+    public void ReadyShoot()
     {
         _isReady = true;
+    }
+    public void NotReadyShoot()
+    {
+        _isReady = false;
     }
 }

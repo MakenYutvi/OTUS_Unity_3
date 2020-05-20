@@ -62,7 +62,8 @@ public class Mine : MonoBehaviour
         _end = _cursor;
         Launched = true;
         _mortar.NotReadyShoot();
-        _Mine = Instantiate(gameObject, gameObject.transform);
+        _Mine = Instantiate(gameObject);
+        _Mine.transform.position = gameObject.transform.position;
         _Mine.gameObject.GetComponent<Rigidbody>().AddForce((_cursor-start.position).normalized*_AddForce, ForceMode.Impulse);
         //_Mine.gameObject.GetComponent<Rigidbody>().AddForce(transform.forward* _AddForce, ForceMode.Impulse);
         _Mine.gameObject.GetComponent<Rigidbody>().useGravity = true;

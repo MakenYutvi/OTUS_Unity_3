@@ -66,7 +66,8 @@ public class Rocket : MonoBehaviour
         _end = _cursor;
         Launched = true;
         _grenadeLauncher.NotReadyShoot();
-        _Rocket = Instantiate(gameObject, gameObject.transform);
+        _Rocket = Instantiate(gameObject);
+        _Rocket.transform.position = gameObject.transform.position;
         //Launched = false;
 
     }
